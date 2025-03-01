@@ -41,12 +41,14 @@ function Input({ className, type, variant, error, ...props }: InputProps) {
 }
 
 interface InputWithIconProps extends InputProps {
-	icon: React.ReactNode;
+	iconLeft?: React.ReactNode;
+	iconRight?: React.ReactNode;
 }
 
 function InputWithIcon({
 	className,
-	icon,
+	iconLeft,
+	iconRight,
 	variant,
 	...props
 }: InputWithIconProps) {
@@ -54,13 +56,20 @@ function InputWithIcon({
 		<div
 			className={cn(inputVariants({ variant, className }), className, "group")}
 		>
-			<span className="text-gray-400 group-focus-within:text-gray-100 group-[&:not(:has(input:placeholder-shown))]:text-gray-100">
-				{icon}
-			</span>
+			{iconLeft && (
+				<span className="text-gray-400 group-focus-within:text-gray-100 group-[&:not(:has(input:placeholder-shown))]:text-gray-100">
+					{iconLeft}
+				</span>
+			)}
 			<Input
 				className="flex-1 border-none bg-transparent focus-visible:ring-0"
 				{...props}
 			/>
+			{iconRight && (
+				<span className="text-gray-400 group-focus-within:text-gray-100 group-[&:not(:has(input:placeholder-shown))]:text-gray-100">
+					{iconRight}
+				</span>
+			)}
 		</div>
 	);
 }
