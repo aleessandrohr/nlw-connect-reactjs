@@ -33,7 +33,9 @@ export default function RootLayout({
 				"dark antialiased"
 			)}
 		>
-			<body>{children}</body>
+			<body className="bg-[url('/background.png')] bg-top bg-no-repeat md:bg-right-top">
+				{children}
+			</body>
 		</html>
 	);
 }

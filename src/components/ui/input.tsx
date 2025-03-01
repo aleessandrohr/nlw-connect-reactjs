@@ -10,6 +10,7 @@ const inputVariants = cva(
 		variants: {
 			variant: {
 				default: "",
+				error: "border-danger [&>span>svg]:text-danger",
 			},
 		},
 		defaultVariants: {
