@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Montserrat, Oxanium } from "next/font/google";
 import "./globals.css";
-import { Toaster } from "@/components/ui/sonner";
+import { LayoutClient } from "@/components/layout-client";
 import { cn } from "@/lib/utils";
 
 const oxanium = Oxanium({
@@ -35,10 +35,11 @@ export default function RootLayout({
 			)}
 		>
 			<body className="bg-[url('/background.png')] bg-top bg-no-repeat md:bg-right-top">
-				<main className="mx-auto max-w-screen-xl px-5 py-8 md:py-0">
-					{children}
-				</main>
-				<Toaster />
+				<LayoutClient>
+					<main className="mx-auto max-w-screen-xl px-5 py-8 md:py-0">
+						{children}
+					</main>
+				</LayoutClient>
 			</body>
 		</html>
 	);

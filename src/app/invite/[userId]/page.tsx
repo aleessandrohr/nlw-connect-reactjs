@@ -14,17 +14,89 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { InputWithIcon } from "@/components/ui/input";
+import {
+	useGetInvitesSubscriberIdRankingClicks,
+	useGetInvitesSubscriberIdRankingCount,
+	useGetInvitesSubscriberIdRankingPosition,
+	useGetRanking,
+} from "@/http/api";
+import { env } from "@/schemas/env";
 import { type IInviteForm, inviteSchema } from "@/schemas/invite";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { BadgeCheck, Copy, Link, Medal, MousePointerClick } from "lucide-react";
 import Image from "next/image";
+import { useParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 const InvitePage = () => {
+	const { userId } = useParams();
+
+	const {
+		data: dataRankingClicks,
+		isLoading: isRankingClicksLoading,
+		isSuccess: isRankingClicksSuccess,
+	} = useGetInvitesSubscriberIdRankingClicks(userId as string, {
+		query: {
+			queryKey: ["invites-subscriber-id-ranking-clicks"],
+		},
+	});
+	const rankingClicks = dataRankingClicks?.count;
+
+	if (isRankingClicksLoading && !isRankingClicksSuccess) {
+		toast.error("Erro ao carregar acessos ao link");
+	}
+
+	const {
+		data: dataRankingCount,
+		isLoading: isRankingCountLoading,
+		isSuccess: isRankingCountSuccess,
+	} = useGetInvitesSubscriberIdRankingCount(userId as string, {
+		query: {
+			queryKey: ["invites-subscriber-id-ranking-count"],
+		},
+	});
+	const rankingCount = dataRankingCount?.count;
+
+	if (isRankingCountLoading && !isRankingCountSuccess) {
+		toast.error("Erro ao carregar o número de inscrições");
+	}
+
+	const {
+		data: dataRankingPosition,
+		isLoading: isRankingPositionLoading,
+		isSuccess: isRankingPositionSuccess,
+	} = useGetInvitesSubscriberIdRankingPosition(userId as string, {
+		query: {
+			queryKey: ["invites-subscriber-id-ranking-position"],
+		},
+	});
+	const rankingPosition = dataRankingPosition?.position;
+
+	if (isRankingPositionLoading && !isRankingPositionSuccess) {
+		toast.error("Erro ao carregar a posição no ranking");
+	}
+
+	const {
+		data: dataRankingQuery,
+		isLoading: isRankingLoading,
+		isSuccess: isRankingSuccess,
+	} = useGetRanking({
+		query: {
+			queryKey: ["invites-subscriber-id-ranking"],
+		},
+	});
+	const [first, second, third] = dataRankingQuery?.ranking ?? [];
+
+	if (isRankingLoading && !isRankingSuccess) {
+		toast.error("Erro ao carregar ranking");
+	}
+
+	const inviteUrl = `${env.NEXT_PUBLIC_API_URL}/invites/${userId}`;
+
 	const form = useForm<IInviteForm>({
 		defaultValues: {
-			invite: "https://example.com/invite/id",
+			invite: inviteUrl,
 		},
 		resolver: zodResolver(inviteSchema),
 	});
@@ -97,7 +169,7 @@ const InvitePage = () => {
 					<div className="grid gap-3 md:grid-cols-3">
 						<div className="relative flex flex-col items-center justify-center gap-1 rounded-xl border border-gray-600 bg-gray-700 p-4">
 							<span className="font-heading font-semibold text-2xl text-gray-200 leading-none">
-								1000
+								{rankingClicks ?? "-"}
 							</span>
 							<span className="text-center text-gray-300 text-sm leading-none">
 								Acessos ao link
@@ -106,7 +178,7 @@ const InvitePage = () => {
 						</div>
 						<div className="relative flex flex-col items-center justify-center gap-1 rounded-xl border border-gray-600 bg-gray-700 p-4">
 							<span className="font-heading font-semibold text-2xl text-gray-200 leading-none">
-								1000
+								{rankingCount ?? "-"}
 							</span>
 							<span className="text-center text-gray-300 text-sm leading-none">
 								Inscrições feitas
@@ -115,7 +187,7 @@ const InvitePage = () => {
 						</div>
 						<div className="relative flex flex-col items-center justify-center gap-1 rounded-xl border border-gray-600 bg-gray-700 p-4">
 							<span className="font-heading font-semibold text-2xl text-gray-200 leading-none">
-								1000
+								{rankingPosition ?? "-"}
 							</span>
 							<span className="text-center text-gray-300 text-sm leading-none">
 								Posição no ranking
@@ -132,10 +204,10 @@ const InvitePage = () => {
 				<div className="space-y-4">
 					<div className="relative flex flex-col justify-center gap-3 rounded-xl border border-gray-600 bg-gray-700 p-6">
 						<span className="text-gray-300 text-sm leading-none">
-							<span className="font-semibold">1º</span> | Alessandro Ramos
+							<span className="font-semibold">1º</span> | {first?.name ?? "N/A"}
 						</span>
 						<span className="font-heading font-semibold text-2xl text-gray-200 leading-none">
-							1000
+							{first?.score ?? "N/A"}
 						</span>
 						<Image
 							src={medalGold}
@@ -145,10 +217,11 @@ const InvitePage = () => {
 					</div>
 					<div className="relative flex flex-col justify-center gap-3 rounded-xl border border-gray-600 bg-gray-700 p-6">
 						<span className="text-gray-300 text-sm leading-none">
-							<span className="font-semibold">2º</span> | Alessandro Ramos
+							<span className="font-semibold">2º</span> |{" "}
+							{second?.name ?? "N/A"}
 						</span>
 						<span className="font-heading font-semibold text-2xl text-gray-200 leading-none">
-							1000
+							{second?.score ?? "N/A"}
 						</span>
 						<Image
 							src={medalSilver}
@@ -158,10 +231,10 @@ const InvitePage = () => {
 					</div>
 					<div className="relative flex flex-col justify-center gap-3 rounded-xl border border-gray-600 bg-gray-700 p-6">
 						<span className="text-gray-300 text-sm leading-none">
-							<span className="font-semibold">3º</span> | Alessandro Ramos
+							<span className="font-semibold">3º</span> | {third?.name ?? "N/A"}
 						</span>
 						<span className="font-heading font-semibold text-2xl text-gray-200 leading-none">
-							1000
+							{third?.score ?? "N/A"}
 						</span>
 						<Image
 							src={medalCooper}

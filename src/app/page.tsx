@@ -11,12 +11,20 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { InputWithIcon } from "@/components/ui/input";
+import { usePostSubscriptions } from "@/http/api";
 import { type ISubscribeForm, subscribeSchema } from "@/schemas/subscribe";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowRight, Mail, Radio, User } from "lucide-react";
+import { ArrowRight, Loader2, Mail, Radio, User } from "lucide-react";
 import Image from "next/image";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+
 const Home = () => {
+	const router = useRouter();
+	const params = useSearchParams();
+	const referral = params.get("referral");
+
 	const form = useForm<ISubscribeForm>({
 		defaultValues: {
 			username: "",
@@ -25,8 +33,31 @@ const Home = () => {
 		resolver: zodResolver(subscribeSchema),
 	});
 
-	const onSubmit = (data: ISubscribeForm) => {
-		console.log(data);
+	const {
+		mutate: postSubscriptions,
+		isPending,
+		isSuccess,
+	} = usePostSubscriptions();
+
+	const onSubmit = async (data: ISubscribeForm) => {
+		postSubscriptions(
+			{
+				data: {
+					name: data.username,
+					email: data.email,
+					referral,
+				},
+			},
+			{
+				onSuccess(data) {
+					router.push(`/invite/${data.subscriberId}`);
+					toast.success("Inscrição confirmada com sucesso!");
+				},
+				onError() {
+					toast.error("Erro ao inscrever-se");
+				},
+			}
+		);
 	};
 
 	return (
@@ -109,8 +140,20 @@ const Home = () => {
 								)}
 							/>
 						</div>
-						<Button type="submit" className="w-full">
-							Confirmar <ArrowRight />
+						<Button
+							type="submit"
+							className="w-full"
+							disabled={isPending || isSuccess}
+						>
+							{isPending ? (
+								<>
+									<Loader2 className="size-4 animate-spin" />
+									Confirmando...
+								</>
+							) : (
+								"Confirmar"
+							)}
+							<ArrowRight />
 						</Button>
 					</form>
 				</Form>
