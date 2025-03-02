@@ -17,6 +17,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRight, Loader2, Mail, Radio, User } from "lucide-react";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 

@@ -3,6 +3,8 @@ import { Montserrat, Oxanium } from "next/font/google";
 import "./globals.css";
 import { LayoutClient } from "@/components/layout-client";
 import { cn } from "@/lib/utils";
+import { Loader2 } from "lucide-react";
+import { Suspense } from "react";
 
 const oxanium = Oxanium({
 	subsets: ["latin"],
@@ -36,9 +38,17 @@ export default function RootLayout({
 		>
 			<body className="bg-[url('/background.png')] bg-top bg-no-repeat md:bg-right-top">
 				<LayoutClient>
-					<main className="mx-auto max-w-screen-xl px-5 py-8 md:py-0">
-						{children}
-					</main>
+					<Suspense
+						fallback={
+							<div className="flex min-h-dvh items-center justify-center">
+								<Loader2 className="size-10 animate-spin" />
+							</div>
+						}
+					>
+						<main className="mx-auto max-w-screen-xl px-5 py-8 md:py-0">
+							{children}
+						</main>
+					</Suspense>
 				</LayoutClient>
 			</body>
 		</html>
