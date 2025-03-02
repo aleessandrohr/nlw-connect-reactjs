@@ -1,8 +1,13 @@
 import { defineConfig } from "orval";
 
+const API_URL =
+	process.env.NODE_ENV === "development"
+		? "http://localhost:3333/docs/json"
+		: "https://nlw-connect-nodejs-aone.onrender.com/docs/json";
+
 export default defineConfig({
 	api: {
-		input: "http://localhost:3333/docs/json",
+		input: API_URL,
 		output: {
 			biome: true,
 			prettier: true,
@@ -12,7 +17,9 @@ export default defineConfig({
 			httpClient: "axios",
 			clean: true,
 			baseUrl:
-				process.env.NODE_ENV === "development" ? "http://localhost:3333" : "",
+				process.env.NODE_ENV === "development"
+					? "http://localhost:3333"
+					: "https://nlw-connect-nodejs-aone.onrender.com",
 			override: {
 				mutator: {
 					path: "./src/libs/api.ts",
