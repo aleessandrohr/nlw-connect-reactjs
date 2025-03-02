@@ -13,15 +13,45 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - env: |
+          NEXT_PUBLIC_API_URL: "http://localhost:3000"
 
       - name: Install Dependencies
-        run: bun install
+        run: |
+          echo "Starting install dependencies..."
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+          nvm install 22
+          nvm use 22
+          npm install bun --global
+          bun install
 
-      - name: Run Biome Check
-        run: bun biome:check
+      - name: Check Lint
+        run: |
+          echo "Starting check lint..."
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+          nvm install 22
+          nvm use 22
+          npm install bun --global
+          bun run biome:check
 
       - name: Test TypeScript Syntax
-        run: bun type-check
+        run: |
+          echo "Starting test type-check..."
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+          nvm install 22
+          nvm use 22
+          npm install bun --global
+          bun run type-check
 
-      - name: Build
-        run: bun build
+      - name: Build Application
+        run: |
+          echo "Starting build..."
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+          nvm install 22
+          nvm use 22
+          npm install bun --global
+          bun run build
