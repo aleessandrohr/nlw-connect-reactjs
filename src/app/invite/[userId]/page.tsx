@@ -43,7 +43,7 @@ const InvitePage = () => {
 	});
 	const rankingClicks = dataRankingClicks?.count;
 
-	if (isRankingClicksLoading && !isRankingClicksSuccess) {
+	if (!isRankingClicksLoading && !isRankingClicksSuccess) {
 		toast.error("Erro ao carregar acessos ao link");
 	}
 
@@ -58,7 +58,7 @@ const InvitePage = () => {
 	});
 	const rankingCount = dataRankingCount?.count;
 
-	if (isRankingCountLoading && !isRankingCountSuccess) {
+	if (!isRankingCountLoading && !isRankingCountSuccess) {
 		toast.error("Erro ao carregar o número de inscrições");
 	}
 
@@ -73,7 +73,7 @@ const InvitePage = () => {
 	});
 	const rankingPosition = dataRankingPosition?.position;
 
-	if (isRankingPositionLoading && !isRankingPositionSuccess) {
+	if (!isRankingPositionLoading && !isRankingPositionSuccess) {
 		toast.error("Erro ao carregar a posição no ranking");
 	}
 
@@ -88,7 +88,7 @@ const InvitePage = () => {
 	});
 	const [first, second, third] = dataRankingQuery?.ranking ?? [];
 
-	if (isRankingLoading && !isRankingSuccess) {
+	if (!isRankingLoading && !isRankingSuccess) {
 		toast.error("Erro ao carregar ranking");
 	}
 
